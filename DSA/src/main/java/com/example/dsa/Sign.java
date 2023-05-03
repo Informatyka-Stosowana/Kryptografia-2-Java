@@ -68,8 +68,6 @@ public class Sign {
 
     private BigInteger GenerateP(BigInteger q, int length) {
         Random random = new Random();
-
-        // Choose another primer number p, such that p-1 mod q = 0. p is called the prime modulus
         do
         {
             p = BigInteger.probablePrime(length, random);
@@ -86,7 +84,7 @@ public class Sign {
         do
         {
             g = new BigInteger(length, random).mod(p.subtract(BigInteger.valueOf(3))).add(BigInteger.TWO);
-            h = g.mod(p).modPow(temp, p);
+            h = g.modPow(temp, p);
         }
         while (!(h.compareTo(BigInteger.ONE) == 1 && h.compareTo(p) == -1 && h.mod(p).modPow(q, p).compareTo(BigInteger.ONE) == 0));
         return h;
@@ -100,7 +98,7 @@ public class Sign {
     }
 
     private BigInteger GeneratePublicKey(BigInteger privateKey, BigInteger h, BigInteger p) {
-        return h.mod(p).modPow(privateKey, p);
+        return h.modPow(privateKey, p);
     }
 
     private BigInteger GenerateR(BigInteger q) {

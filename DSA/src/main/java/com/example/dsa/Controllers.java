@@ -5,8 +5,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 
+import java.io.FileNotFoundException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 public class Controllers {
     @FXML
@@ -123,5 +130,47 @@ public class Controllers {
         else {
             VerifyLabel.setText("Podpis niepoprawny");
         }
+    }
+
+    @FXML
+    protected void onClickReadFileGenerate() {
+        MessageGenerate.setText(readFile());
+    }
+
+    @FXML
+    protected void onClickReadFileVerify() {
+        MessageVerify.setText(readFile());
+    }
+
+    private String readFile()
+    {
+        JFileChooser fileChooser = new JFileChooser();
+
+        int result = fileChooser.showOpenDialog(null);
+        byte[] byteArray = null;
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            FileInputStream inputStream = null;
+
+            try {
+                inputStream = new FileInputStream(file);
+                byteArray = new byte[(int) file.length()];
+                inputStream.read(byteArray);
+            } catch (Exception e) {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (Exception ignored) {}
+                }
+                return "Błąd wczytywania pliku";
+            }
+        }
+
+        StringBuilder hexStringBuilder = new StringBuilder();
+        for (byte b : byteArray) {
+            hexStringBuilder.append(String.format("%02x", b));
+        }
+        return hexStringBuilder.toString();
     }
 }
