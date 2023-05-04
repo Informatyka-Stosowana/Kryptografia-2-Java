@@ -78,19 +78,27 @@ public class Controllers {
 
     @FXML
     private Label VerifyLabel;
+    @FXML
+    private TextArea PrivateKeyOutput;
 
 
     @FXML
     protected void onClickGenerateSignature() throws NoSuchAlgorithmException {
         Sign sign = new Sign();
+        BigInteger zero = BigInteger.ZERO;
         byte[] message = MessageGenerate.getText().getBytes();
-        BigInteger[] signature = sign.SignMessage(message);
+
+        BigInteger[] signature;
+        if (PrivateKeyOutput.getText() == "") signature = sign.SignMessage(message, zero);
+        else signature = sign.SignMessage(message, new BigInteger(PrivateKeyOutput.getText()));
+
         S1Output.setText(signature[0].toString());
         S2Output.setText(signature[1].toString());
         POutput.setText(sign.getP().toString());
         QOutput.setText(sign.getQ().toString());
         HOutput.setText(sign.getH().toString());
         PublicKeyOutput.setText(sign.getPublicKey().toString());
+        PrivateKeyOutput.setText(sign.getPrivateKey().toString());
     }
 
     @FXML

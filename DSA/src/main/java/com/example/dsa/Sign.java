@@ -25,12 +25,18 @@ import java.util.Random;
 
 public class Sign {
     private BigInteger p;
+
+    public BigInteger getPrivateKey() {
+        return privateKey;
+    }
+
     private BigInteger q;
     private BigInteger h;
     private BigInteger publicKey;
+    private BigInteger privateKey;
 
 
-    public BigInteger[] SignMessage(byte[] message) throws NoSuchAlgorithmException {
+    public BigInteger[] SignMessage(byte[] message, BigInteger pk) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
         BigInteger hashMessage = new BigInteger(1, messageDigest.digest(message));
@@ -43,7 +49,8 @@ public class Sign {
         h = GenerateH(lenght, p, q);
 
         // Wygenerowanie klucza prywatnego a i wyliczenie na jego podstawie klucz publicznego b
-        BigInteger privateKey = GeneratePrivateKey(q);
+        if (pk.compareTo(BigInteger.ZERO) == 0)  privateKey= GeneratePrivateKey(q);
+        else privateKey = pk;
         publicKey = GeneratePublicKey(privateKey, h, p);
 
         BigInteger s1;
